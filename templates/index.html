@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-to-Video Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>GoalGuidr</h1>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('language_learning_page') }}">Language</a>
+            <a href="{{ url_for('dashboard') }}">dashboard</a>
+            <button id="clearCookiesButton" style="background: none; border: none; color: #b5c9c3; cursor: pointer;">Clear Cookies</button>
+        </div>
+    </nav>
+    
+    <div class="content-container">
+        <h1 class="welcome-heading">Have a question? Ask GoalGuidr!</h1>
+        
+        <div class="main-content">
+            <div class="left-section">
+                <div id="input-container">
+                    <textarea id="textInput" placeholder="Why is the sky blue?"></textarea>
+                    <div class="buttons-container">
+                        <button id="generateButton">Send Chat</button>
+                        <button id="startVoiceMode">Start Voice Mode</button>
+                    </div>
+                </div>
+                
+                <canvas id="animationCanvas" width="600" height="400"></canvas>
+            </div>
+            
+            <!-- Chat log container moved to the right -->
+            <div class="right-section">
+                <div class="chat-log" id="chatLog">
+                    <div class="chat-log-title">Conversation History</div>
+                    <!-- Chat messages will be added here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        const startVoiceModeButton = document.getElementById("startVoiceMode");
+        const canvas = document.getElementById('animationCanvas');
+        const ctx = canvas.getContext('2d');
+        const loadingOverlay = document.getElementById("loadingOverlay");
+        const inputContainer = document.getElementById("input-container");
+
+        const startListening = async () => {
+            try {
+                // Hide the input container and show the canvas
+                inputContainer.style.display = "none";
+                canvas.style.display = "block";
+                
+                const response = await fetch("{{ url_for('voice_input') }}", { method: 'POST' });
+                if (!response.ok) {
+                    throw new Error('Failed to capture voice input');
+                }
+
+                const data = await response.json();
+                if (data.text) {
+                    // Add user message to chat log
+                    addMessageToChatLog('user', data.text);
+
+                    // Show loading overlay
+                    loadingOverlay.style.display = "flex";
+
+                    // Pass the recognized text to the generate-frames endpoint
+                    const generateResponse = await fetch("{{ url_for('generate_frames') }}", {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text: data.text })
+                    });
+
+                    if (!generateResponse.ok) {
+                        throw new Error('Failed to generate animation frames');
+                    }
+
+                    // Hide loading overlay after response is received
+                    loadingOverlay.style.display = "none";
+
+                    // Handle animation frames and audio
+                    const reader = generateResponse.body.getReader();
+                    const decoder = new TextDecoder('utf-8');
+                    let buffer = '';
+
+                    const renderFrame = (base64Image) => {
+                        const img = new Image();
+                        img.src = base64Image;
+                        img.onload = () => {
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        };
+                    };
+
+                    // Extract audio from the response headers
+                    const audioBase64 = generateResponse.headers.get('X-Audio-Base64');
+                    if (audioBase64) {
+                        const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
+                        
+                        // Extract AI response from the server's conversation history
+                        fetch("{{ url_for('get_last_response') }}")
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.response) {
+                                    addMessageToChatLog('ai', data.response);
+                                }
+                            })
+                            .catch(error => console.error('Error getting AI response:', error));
+                        
+                        audio.play();
+
+                        // Start listening again after the audio finishes playing
+                        audio.addEventListener('ended', () => {
+                            console.log("Audio finished playing. Listening again...");
+                            startListening();
+                        });
+                    }
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+
+                        buffer += decoder.decode(value, { stream: true });
+                        const frames = buffer.split('\n');
+                        buffer = frames.pop(); // Keep the last incomplete frame in the buffer
+
+                        for (const frame of frames) {
+                            if (frame.trim()) {
+                                renderFrame(frame.trim());
+                                await new Promise((resolve) => setTimeout(resolve, 1000 / 24)); // 24 FPS
+                            }
+                        }
+                    }
+                } else if (data.error) {
+                    alert(`Error: ${data.error}`);
+                    // Show the input container again if there's an error
+                    inputContainer.style.display = "block";
+                    canvas.style.display = "none";
+                }
+            } catch (error) {
+                console.error("Error in voice mode:", error);
+                alert("An error occurred while capturing voice input.");
+                loadingOverlay.style.display = "none"; // Hide loading overlay on error
+                // Show the input container again if there's an error
+                inputContainer.style.display = "block";
+                canvas.style.display = "none";
+            }
+        };
+
+        startVoiceModeButton.addEventListener("click", () => {
+            startListening();
+        });
+
+        document.getElementById("clearCookiesButton").addEventListener("click", function() {
+            fetch("{{ url_for('clear_cookies') }}", { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        alert(data.message);
+                        location.reload(); // Reload the page after clearing cookies
+                    } else if (data.error) {
+                        alert("Error: " + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error clearing cookies:", error);
+                    alert("An error occurred while clearing cookies.");
+                });
+        });
+    </script>
+</body>
+</html>

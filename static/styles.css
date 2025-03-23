@@ -1,0 +1,380 @@
+/* Import Space Grotesk font from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap");
+
+* {
+  box-sizing: border-box;
+  font-family: "Space Grotesk", Arial, sans-serif;
+  font-size: 18px; /* Increased base font size */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Moving gradient background */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(-45deg, #1a2a3a, #0d47a1, #1e3c72, #2c5364);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  z-index: -1;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.navbar {
+  width: 100%;
+  background-color: #2c5364; /* Dark blue */
+  padding: 15px 30px; /* Increased padding */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  margin-bottom: 30px; /* Reduced margin for spacing */
+}
+
+.navbar h1 {
+  font-family: "Space Grotesk", Arial, sans-serif;
+  margin: 0;
+  font-size: 42px; /* Increased font size */
+  color: #8ba888; /* Light oak green */
+  text-align: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: 25px; /* Increased gap */
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #b5c9c3; /* Very light oak green */
+  font-size: 20px; /* Increased font size */
+  font-family: "Space Grotesk", Arial, sans-serif;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #8ba888; /* Light oak green on hover */
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Welcome heading with gradient text */
+.welcome-heading {
+  font-size: 72px; /* Slightly reduced font size */
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.1; /* Reduced line height */
+  margin: 0 0 40px 0; /* Reduced bottom margin */
+  background: linear-gradient(to right, #8ba888, #b5c9c3, #4b6455); /* Gradient from light oak to dark oak */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  white-space: nowrap; /* Attempt to keep on one line */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* New layout for main content */
+.main-content {
+  display: flex;
+  width: 100%;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.left-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.right-section {
+  flex: 0 0 350px; /* Fixed width for chat log */
+  display: flex;
+  flex-direction: column;
+}
+
+#input-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align to the left */
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align to the left */
+  width: 100%;
+  gap: 20px; /* Space between buttons */
+  margin-bottom: 30px; /* Reduced space after buttons */
+}
+
+textarea {
+  width: 100%;
+  height: 180px; /* Increased height */
+  margin-bottom: 30px; /* Reduced margin */
+  padding: 25px; /* Increased padding */
+  font-size: 22px; /* Increased font size */
+  font-family: "Space Grotesk", Arial, sans-serif;
+  background-color: rgba(255, 255, 255, 0.05); /* More transparent */
+  border: 3px solid #4b6455; /* Oak green, thicker border */
+  border-radius: 15px; /* Increased border radius */
+  resize: none;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  box-sizing: border-box;
+  color: #e0e0e0; /* Light gray text */
+}
+
+textarea::placeholder {
+  color: rgba(181, 201, 195, 0.7); /* Semi-transparent very light oak green */
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #8ba888; /* Light oak green */
+  background-color: rgba(255, 255, 255, 0.1); /* Slightly more opaque on focus */
+}
+
+button {
+  width: 100%; /* Full width to match textarea */
+  padding: 20px 30px; /* Increased padding */
+  font-size: 24px; /* Increased font size */
+  cursor: pointer;
+  font-family: "Space Grotesk", Arial, sans-serif;
+  background-color: #4b6455; /* Oak green */
+  color: #e0e0e0; /* Light gray text */
+  border: 3px solid #8ba888; /* Light oak green, thicker border */
+  border-radius: 15px; /* Increased border radius */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-weight: 500;
+}
+
+button:hover {
+  background-color: #2c5364; /* Dark blue */
+  color: #b5c9c3; /* Very light oak green */
+}
+
+/* Styles for the stop button */
+#stopButton {
+  background-color: #ff4d4d; /* Red background for stop button */
+  color: #ffffff;
+  border: 2px solid #cc0000; /* Darker red border */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#stopButton:hover {
+  background-color: #cc0000; /* Darker red on hover */
+  color: #ffffff;
+}
+
+/* Styles for the "I don't understand" button */
+#dontUnderstandButton {
+  width: 100%; /* Full width to match other buttons */
+  padding: 15px 20px; /* Adjusted padding for better spacing */
+  font-size: 18px; /* Slightly smaller font size for balance */
+  cursor: pointer;
+  font-family: "Space Grotesk", Arial, sans-serif;
+  background-color: #ffcc00; /* Bright yellow background */
+  color: #333333; /* Dark text for contrast */
+  border: 2px solid #e6b800; /* Slightly darker yellow border */
+  border-radius: 10px; /* Rounded corners for consistency */
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  font-weight: 600; /* Slightly bolder text */
+}
+
+#dontUnderstandButton:hover {
+  background-color: #e6b800; /* Darker yellow on hover */
+  color: #ffffff; /* White text on hover */
+  transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+/* Chat log styles */
+.chat-log {
+  width: 100%;
+  height: 100%; /* Take full height of parent */
+  min-height: 400px; /* Minimum height */
+  padding: 25px; /* Increased padding */
+  background-color: rgba(28, 54, 84, 0.6); /* Semi-transparent dark blue */
+  border: 3px solid #4b6455; /* Oak green, thicker border */
+  border-radius: 15px; /* Increased border radius */
+  overflow-y: auto;
+  font-family: "Space Grotesk", Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.chat-log-title {
+  font-size: 28px; /* Increased font size */
+  font-weight: bold;
+  color: #8ba888; /* Light oak green */
+  margin-bottom: 25px; /* Increased margin */
+  text-align: center;
+}
+
+.chat-message {
+  margin-bottom: 20px; /* Increased margin */
+  padding-bottom: 20px; /* Increased padding */
+  border-bottom: 2px solid rgba(75, 100, 85, 0.4); /* Semi-transparent oak green, thicker border */
+  font-size: 20px; /* Increased font size */
+}
+
+.chat-message:last-child {
+  border-bottom: none;
+}
+
+.user-message {
+  font-weight: bold;
+  color: #b5c9c3; /* Very light oak green */
+}
+
+.ai-message {
+  color: #8ba888; /* Light oak green */
+}
+
+.expand-button {
+  color: #b5c9c3; /* Very light oak green */
+  cursor: pointer;
+  font-weight: bold;
+  display: inline;
+}
+
+.expand-button:hover {
+  text-decoration: underline;
+}
+
+#animationCanvas {
+  display: none; /* Hidden by default */
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  border: 3px solid #4b6455; /* Oak green */
+  border-radius: 15px;
+  background-color: rgba(28, 54, 84, 0.3); /* Semi-transparent dark blue background */
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 80px; /* Increased size */
+  height: 80px; /* Increased size */
+  border: 6px solid rgba(181, 201, 195, 0.3); /* Semi-transparent very light oak green, thicker border */
+  border-top: 6px solid #8ba888; /* Light oak green, thicker border */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 10px; /* Increased width */
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(28, 54, 84, 0.4); /* Semi-transparent dark blue */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b6455; /* Oak green */
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8ba888; /* Light oak green */
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 992px) {
+  .welcome-heading {
+    font-size: 60px; /* Smaller on tablets */
+    white-space: normal; /* Allow wrapping on smaller screens */
+  }
+
+  .main-content {
+    flex-direction: column; /* Stack vertically on smaller screens */
+  }
+
+  .right-section {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .chat-log {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome-heading {
+    font-size: 48px; /* Smaller on mobile */
+  }
+
+  button {
+    padding: 15px 20px; /* Slightly smaller on mobile */
+    font-size: 20px;
+  }
+
+  textarea {
+    height: 150px;
+    padding: 20px;
+    font-size: 18px;
+  }
+}
+
