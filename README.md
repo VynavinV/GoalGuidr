@@ -1,6 +1,6 @@
 # GoogleGenAI Project
 
-This project is a Flask-based web application that integrates Google GenAI, Cohere, and other tools to provide AI-powered features such as conversation generation, language learning, and multimedia content creation.
+This project is a Flask-based web application that integrates Google GenAI, Cohere, and other tools to provide AI-powered features such as conversation generation, language learning, and multimedia content creation. It helps people all around the world have access to education, social, language, and mental health resources. Designed to help you meet your goals and overcome roadblocks without even realizing. 
 
 ## Features
 
